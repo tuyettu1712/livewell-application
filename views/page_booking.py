@@ -11,7 +11,7 @@ def show():
     st.header("Book a Consultant 👨‍⚕️")
     st.subheader("Find a specialist and reserve your consultation slot")
 
-    # ── STEP 1: Identify user 
+    # ─1: Identify user 
     if "user_email" not in st.session_state:
         with st.form("email_form_booking"):
             email = st.text_input("Enter your registered email *")
@@ -27,7 +27,7 @@ def show():
     st.info(f"Booking as: {st.session_state['user_email']}")
     st.divider()
 
-    # ── STEP 2: Filter bar 
+    # 2: Filter bar 
     st.subheader("Find a Consultant")
 
     col1, col2, col3 = st.columns(3)
@@ -36,26 +36,23 @@ def show():
         selected_date = st.date_input(
             "SELECT A DATE",
             value=None,
-            min_value=date.today(),
-        )
+            min_value=date.today(),)
 
     with col2:
         success, specs = get_all_specializations()
         spec_names = [s["specialization_name"] for s in specs] if success else []
         selected_spec = st.selectbox(
             "SPECIALIZATION",
-            options=["All"] + spec_names
-        )
+            options=["All"] + spec_names)
 
     with col3:
         consultant_name = st.text_input(
             "🔍 Search Consultant Name",
-            placeholder="e.g. Kathleen"
-        )
+            placeholder="e.g. David")
 
     st.divider()
 
-    # ── STEP 3: Load and display consultants 
+    # 3: Load and display consultants 
     success, consultants = get_consultants_filtered(
         specialization=selected_spec if selected_spec != "All" else None,
         filter_date=selected_date,
@@ -72,21 +69,19 @@ def show():
 
     st.subheader(f"{len(consultants)} Consultant(s) Found")
 
-    # ── STEP 4: Consultant cards with slot selection 
+    # 4: Consultant cards with slot selection 
     for c in consultants:
         with st.expander(
             f"👨‍⚕️ {c['first_name']} {c['last_name']} "
             f"— {c['specializations']} "
-            f"| 🟢 {c['available_slots']} slot(s) available"
-        ):
-            st.write(f"📋 {c['description']}")
+            f"| 🟢 {c['available_slots']} slot(s) available"):
+            st.write(f"{c['description']}")
             st.divider()
 
             # Load available slots for this consultant
             success, slots = get_available_slots(
                 consultant_email=c["consultant_email"],
-                filter_date=selected_date
-            )
+                filter_date=selected_date)
 
             if not success:
                 st.error(slots)
@@ -99,14 +94,12 @@ def show():
             # Slot selector
             slot_options = {
                 f"{s['slot_date']}  |  {s['slot_time']}": s
-                for s in slots
-            }
+                for s in slots}
 
             selected_slot_label = st.selectbox(
                 "Choose an available slot",
                 options=["-- Select a slot --"] + list(slot_options.keys()),
-                key=f"slot_{c['consultant_email']}"
-            )
+                key=f"slot_{c['consultant_email']}")
 
             if selected_slot_label == "-- Select a slot --":
                 continue
@@ -123,15 +116,13 @@ def show():
             if st.button(
                 "Confirm Booking",
                 key=f"book_{c['consultant_email']}",
-                use_container_width=True
-            ):
+                use_container_width=True):
                 with st.spinner("Booking your slot..."):
                     success, message = book_slot(
                         st.session_state["user_email"],
                         c["consultant_email"],
                         slot["slot_date"],
-                        slot["slot_time"]
-                    )
+                        slot["slot_time"])
                 if success:
                     st.success("Booking confirmed!")
                 else:

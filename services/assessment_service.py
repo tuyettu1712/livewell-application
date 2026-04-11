@@ -1,6 +1,27 @@
 import mysql.connector
 from db.connection import get_connection
 
+def get_user_by_email(email):
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)  # accessing data with column names
+        cursor.callproc("get_user_by_email", [email])
+        user = None
+        for result in cursor.stored_results():
+            user = result.fetchone()
+        conn.commit()
+        if user is None:
+            return False, "User not found"
+        return True, user
+    except mysql.connector.Error as e:
+        return False, e.msg
+    finally:
+        try:
+            if cursor is not None: cursor.close()
+            if conn is not None: conn.close()
+        except: pass
 
 def check_and_start_session(email):
     conn = None

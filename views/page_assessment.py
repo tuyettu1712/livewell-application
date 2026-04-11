@@ -1,21 +1,20 @@
 import streamlit as st
 from services.assessment_service import (
+    get_user_by_email,
     check_and_start_session,
     get_questions,
     submit_response,
     submit_assessment,
     get_assessment_result,
     is_existing_session,
-    clear_session_responses
-)
+    clear_session_responses)
 from ml.predictor import predict_obesity_level
-
 
 def show():
     st.header("Health Assessment")
     st.subheader("Complete the questionnaire to receive your personalized health evaluation")
 
-    # ── STEP 1: Email input ────────────────────────────────────────
+    # 1: Email input 
     if "user_email" not in st.session_state:
         with st.form("email_form"):
             email = st.text_input("Enter your registered email *")
@@ -35,7 +34,7 @@ def show():
                     st.rerun()
         return
 
-    # ── If user_email already in session (came from registration) ──
+    # If user_email already in session (came from registration)
     if "session_id" not in st.session_state:
         success, result = check_and_start_session(st.session_state["user_email"])
         if not success:
@@ -49,7 +48,7 @@ def show():
         st.session_state["assessment_step"] = "form"
         st.rerun()
 
-    # ── STEP 2: Questionnaire form ─────────────────────────────────
+    # 2: Questionnaire form 
     if st.session_state.get("assessment_step") == "form":
         questions = get_questions()
         if not questions:
@@ -61,9 +60,7 @@ def show():
         # Show resume banner if continuing incomplete session
         if st.session_state.get("resuming"):
             st.warning("You have an incomplete assessment. Resuming where you left off.")
-
         st.divider()
-
         with st.form("assessment_form"):
             responses = {}  # {question_text: option_text}
 
@@ -88,7 +85,6 @@ def show():
                 responses[q["question_text"]] = selected
 
             submitted = st.form_submit_button("Submit Assessment")
-
         if submitted:
             # Validate required questions answered
             unanswered = [
@@ -96,9 +92,7 @@ def show():
                 if q["is_required"]
                 and (
                     not responses.get(q["question_text"])
-                    or responses[q["question_text"]] == "-- Select --"
-                )
-            ]
+                    or responses[q["question_text"]] == "-- Select --")]
             if unanswered:
                 st.error(f"Please answer all {len(unanswered)} required question(s).")
                 return
@@ -115,7 +109,6 @@ def show():
                         or responses[q["question_text"]] == "-- Select --"
                     ):
                         continue
-
                     success, msg = submit_response(
                         st.session_state["session_id"],
                         q["question_id"],
@@ -130,7 +123,7 @@ def show():
             st.session_state.pop("resuming", None)
             st.rerun()
 
-    # ── STEP 3: Completed screen ───────────────────────────────────
+    # 3: Completed screen 
     if st.session_state.get("assessment_step") == "completed":
         st.success("Assessment completed!")
         st.write("Your responses have been recorded.")
@@ -139,13 +132,12 @@ def show():
             st.session_state["assessment_step"] = "result"
             st.rerun()
 
-    # ── STEP 4: Run ML + show result ───────────────────────────────
+    # 4: Run ML + show result 
     if st.session_state.get("assessment_step") == "result":
         
         # Only run ML + submit if not already done
         if "assessment_result" not in st.session_state:
             with st.spinner("Analyzing your results..."):
-                from services.user_registration import get_user_by_email
                 success, user = get_user_by_email(st.session_state["user_email"])
                 if not success:
                     st.error(f"Could not load user profile: {user}")
