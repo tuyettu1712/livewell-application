@@ -27,20 +27,21 @@ CREATE TABLE `Assessment_Session` (
   `user_email` varchar(255) NOT NULL,
   `started_at` datetime NOT NULL,
   `predicted_obesity_level` varchar(50) DEFAULT NULL,
-  `assessed_at` datetime DEFAULT NULL,
-  `status` enum('In-progress','completed') NOT NULL DEFAULT 'In-progress',
+  `status` enum('in-progress','completed') NOT NULL DEFAULT 'in-progress',
   `calories` decimal(8,2) DEFAULT NULL,
   `protein_g` decimal(8,2) DEFAULT NULL,
   `carbs_g` decimal(8,2) DEFAULT NULL,
   `fat_g` decimal(8,2) DEFAULT NULL,
   PRIMARY KEY (`session_id`),
-  KEY `user_email` (`user_email`),
+  UNIQUE KEY `user_email` (`user_email`,`started_at`),
+  KEY `predicted_obesity_level` (`predicted_obesity_level`),
   CONSTRAINT `assessment_session_ibfk_1` FOREIGN KEY (`user_email`) REFERENCES `User` (`user_email`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `assessment_session_ibfk_2` FOREIGN KEY (`predicted_obesity_level`) REFERENCES `Recommendation_Rule` (`obesity_level`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `assessment_session_chk_1` CHECK ((`calories` >= 0)),
   CONSTRAINT `assessment_session_chk_2` CHECK ((`protein_g` >= 0)),
   CONSTRAINT `assessment_session_chk_3` CHECK ((`carbs_g` >= 0)),
   CONSTRAINT `assessment_session_chk_4` CHECK ((`fat_g` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,7 +50,7 @@ CREATE TABLE `Assessment_Session` (
 
 LOCK TABLES `Assessment_Session` WRITE;
 /*!40000 ALTER TABLE `Assessment_Session` DISABLE KEYS */;
-INSERT INTO `Assessment_Session` VALUES (1,'neha1@gmail.com','2026-04-10 09:00:00','Normal Weight','2026-04-10 09:10:00','completed',1282.00,66.00,127.25,33.93),(2,'tuyet1@gmail.com','2026-04-10 11:00:00','Overweight Level I','2026-04-10 11:12:00','completed',1389.60,108.75,95.46,31.82),(3,'neha1@gmail.com','2026-04-12 08:30:00','Obesity Type I','2026-04-12 08:42:00','completed',1025.70,99.00,47.23,20.99),(4,'tuyet1@gmail.com','2026-04-13 02:00:00','Insufficient Weight','2026-04-13 02:09:00','completed',1775.60,116.00,180.35,36.43),(5,'alex1@gmail.com','2026-04-14 10:15:00','Obesity Type II','2026-04-14 10:27:00','completed',1125.19,116.80,41.12,21.93),(9,'anhtuyet1712@gmail.com','2026-04-09 18:22:59','Normal Weight','2026-04-09 18:43:37','completed',1276.50,60.00,90.69,34.55),(10,'khanggiayang@gmail.com','2026-04-09 18:28:26','Insufficient Weight','2026-04-09 18:54:49','completed',1210.38,1.60,124.17,33.44),(11,'tuyet1@gmail.com','2026-04-09 18:29:52',NULL,NULL,'In-progress',NULL,NULL,NULL,NULL),(12,'anhtuyet1712@gmail.com','2026-04-09 18:44:58','Normal Weight','2026-04-09 18:45:56','completed',1276.50,60.00,90.69,34.55),(13,'khanggiayang@gmail.com','2026-04-09 18:55:00','Insufficient Weight','2026-04-09 18:55:18','completed',1210.38,1.60,124.17,33.44),(14,'khanggiayang@gmail.com','2026-04-09 19:00:04','Normal Weight','2026-04-09 19:36:48','completed',1052.50,1.20,91.68,34.92),(15,'anhtuyet1712@gmail.com','2026-04-09 19:08:59','Normal Weight','2026-04-09 19:12:27','completed',1276.50,60.00,90.69,34.55);
+INSERT INTO `Assessment_Session` VALUES (6,'neha1@gmail.com','2026-04-10 09:00:00','Normal Weight','completed',1282.00,66.00,127.25,33.93),(7,'tuyet1@gmail.com','2026-04-10 11:00:00','Overweight Level I','completed',1389.60,108.75,95.46,31.82),(8,'neha1@gmail.com','2026-04-12 08:30:00','Obesity Type I','completed',1025.70,99.00,47.23,20.99),(9,'tuyet1@gmail.com','2026-04-13 02:00:00','Insufficient Weight','completed',1775.60,116.00,180.35,36.43),(10,'alex1@gmail.com','2026-04-14 10:15:00','Obesity Type II','completed',1125.19,116.80,41.12,21.93),(11,'tuyet1712@gmail.com','2026-04-10 21:09:49','Normal Weight','completed',1315.25,80.40,86.95,33.12);
 /*!40000 ALTER TABLE `Assessment_Session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,9 +108,51 @@ CREATE TABLE `Consultant_Availability` (
 
 LOCK TABLES `Consultant_Availability` WRITE;
 /*!40000 ALTER TABLE `Consultant_Availability` DISABLE KEYS */;
-INSERT INTO `Consultant_Availability` VALUES ('ananya.shah@livewell.com',NULL,'2026-04-09','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-09','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-09','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-10','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-10','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-10','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-13','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-13','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-13','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-14','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-14','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-14','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-15','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-15','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-15','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-16','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-16','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-16','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-17','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-17','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-17','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-20','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-20','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-20','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-21','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-21','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-21','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-22','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-22','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-22','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-23','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-23','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-23','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-24','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-24','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-24','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-27','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-27','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-27','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-28','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-28','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-28','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-29','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-29','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-29','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-30','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-30','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-30','10-11','open'),('david.kim@livewell.com',NULL,'2026-04-09','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-09','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-09','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-09','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-14','8-9','open'),('david.kim@livewell.com','khanggiayang@gmail.com','2026-04-14','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-14','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-14','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-16','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-16','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-16','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-16','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-21','8-9','open'),('david.kim@livewell.com','khanggiayang@gmail.com','2026-04-21','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-21','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-21','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-23','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-23','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-23','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-23','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-28','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-28','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-28','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-28','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-30','8-9','open'),('david.kim@livewell.com','khanggiayang@gmail.com','2026-04-30','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-30','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-30','3-4','open'),('michael.lee@livewell.com',NULL,'2026-04-09','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-09','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-09','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-10','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-10','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-10','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-13','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-13','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-13','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-14','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-14','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-14','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-15','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-15','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-15','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-16','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-16','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-16','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-17','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-17','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-17','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-20','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-20','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-20','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-21','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-21','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-21','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-22','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-22','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-22','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-23','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-23','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-23','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-24','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-24','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-24','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-27','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-27','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-27','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-28','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-28','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-28','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-29','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-29','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-29','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-30','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-30','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-30','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-09','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-09','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-09','1-2','open'),('priya.nair@livewell.com','anhtuyet1712@gmail.com','2026-04-09','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-13','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-13','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-13','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-13','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-14','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-14','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-14','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-14','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-15','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-15','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-15','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-15','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-16','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-16','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-16','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-16','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-20','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-20','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-20','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-20','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-21','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-21','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-21','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-21','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-22','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-22','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-22','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-22','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-23','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-23','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-23','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-23','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-27','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-27','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-27','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-27','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-28','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-28','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-28','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-28','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-29','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-29','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-29','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-29','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-30','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-30','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-30','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-30','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-09','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-09','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-09','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-10','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-10','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-10','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-13','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-13','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-13','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-15','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-15','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-15','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-17','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-17','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-17','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-20','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-20','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-20','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-22','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-22','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-22','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-24','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-24','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-24','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-27','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-27','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-27','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-29','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-29','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-29','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-30','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-30','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-30','2-3','open');
+INSERT INTO `Consultant_Availability` VALUES ('ananya.shah@livewell.com',NULL,'2026-04-09','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-09','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-09','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-10','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-10','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-10','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-13','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-13','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-13','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-14','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-14','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-14','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-15','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-15','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-15','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-16','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-16','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-16','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-17','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-17','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-17','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-20','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-20','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-20','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-21','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-21','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-21','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-22','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-22','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-22','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-23','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-23','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-23','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-24','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-24','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-24','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-27','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-27','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-27','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-28','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-28','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-28','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-29','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-29','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-29','10-11','open'),('ananya.shah@livewell.com',NULL,'2026-04-30','8-9','open'),('ananya.shah@livewell.com',NULL,'2026-04-30','9-10','open'),('ananya.shah@livewell.com',NULL,'2026-04-30','10-11','open'),('david.kim@livewell.com',NULL,'2026-04-09','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-09','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-09','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-09','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-14','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-14','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-14','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-14','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-16','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-16','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-16','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-16','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-21','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-21','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-21','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-21','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-23','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-23','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-23','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-23','3-4','open'),('david.kim@livewell.com',NULL,'2026-04-28','8-9','open'),('david.kim@livewell.com',NULL,'2026-04-28','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-28','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-28','3-4','open'),('david.kim@livewell.com','tuyet1712@gmail.com','2026-04-30','8-9','booked'),('david.kim@livewell.com',NULL,'2026-04-30','11-12','open'),('david.kim@livewell.com',NULL,'2026-04-30','2-3','open'),('david.kim@livewell.com',NULL,'2026-04-30','3-4','open'),('michael.lee@livewell.com',NULL,'2026-04-09','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-09','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-09','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-10','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-10','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-10','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-13','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-13','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-13','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-14','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-14','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-14','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-15','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-15','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-15','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-16','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-16','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-16','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-17','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-17','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-17','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-20','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-20','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-20','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-21','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-21','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-21','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-22','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-22','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-22','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-23','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-23','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-23','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-24','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-24','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-24','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-27','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-27','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-27','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-28','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-28','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-28','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-29','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-29','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-29','1-2','open'),('michael.lee@livewell.com',NULL,'2026-04-30','9-10','open'),('michael.lee@livewell.com',NULL,'2026-04-30','11-12','open'),('michael.lee@livewell.com',NULL,'2026-04-30','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-09','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-09','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-09','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-09','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-13','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-13','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-13','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-13','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-14','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-14','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-14','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-14','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-15','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-15','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-15','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-15','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-16','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-16','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-16','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-16','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-20','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-20','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-20','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-20','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-21','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-21','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-21','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-21','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-22','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-22','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-22','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-22','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-23','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-23','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-23','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-23','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-27','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-27','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-27','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-27','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-28','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-28','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-28','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-28','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-29','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-29','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-29','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-29','2-3','open'),('priya.nair@livewell.com',NULL,'2026-04-30','9-10','open'),('priya.nair@livewell.com',NULL,'2026-04-30','10-11','open'),('priya.nair@livewell.com',NULL,'2026-04-30','1-2','open'),('priya.nair@livewell.com',NULL,'2026-04-30','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-09','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-09','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-09','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-10','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-10','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-10','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-13','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-13','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-13','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-15','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-15','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-15','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-17','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-17','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-17','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-20','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-20','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-20','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-22','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-22','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-22','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-24','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-24','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-24','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-27','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-27','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-27','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-29','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-29','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-29','2-3','open'),('sofia.martin@livewell.com',NULL,'2026-04-30','10-11','open'),('sofia.martin@livewell.com',NULL,'2026-04-30','1-2','open'),('sofia.martin@livewell.com',NULL,'2026-04-30','2-3','open');
 /*!40000 ALTER TABLE `Consultant_Availability` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `t_sync_booking_status_on_insert` BEFORE INSERT ON `consultant_availability` FOR EACH ROW BEGIN
+    IF NEW.user_email IS NOT NULL THEN
+        SET NEW.booking_status = 'booked';
+    ELSE
+        SET NEW.booking_status = 'open';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `t_sync_booking_status_on_update` BEFORE UPDATE ON `consultant_availability` FOR EACH ROW BEGIN
+    IF NEW.user_email IS NOT NULL THEN
+        SET NEW.booking_status = 'booked';
+    ELSE
+        SET NEW.booking_status = 'open';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `Obtains`
@@ -201,7 +244,7 @@ DROP TABLE IF EXISTS `Recommendation_Rule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Recommendation_Rule` (
-  `obesity_level` enum('Insufficient Weight','Normal Weight','Overweight Level I','Overweight Level II','Obesity Type I','Obesity Type II','Obesity Type III') NOT NULL,
+  `obesity_level` varchar(50) NOT NULL,
   `description` varchar(2000) NOT NULL,
   `message` varchar(2000) NOT NULL,
   `calorie_adjustment_factor` decimal(5,2) NOT NULL,
@@ -221,7 +264,7 @@ CREATE TABLE `Recommendation_Rule` (
 
 LOCK TABLES `Recommendation_Rule` WRITE;
 /*!40000 ALTER TABLE `Recommendation_Rule` DISABLE KEYS */;
-INSERT INTO `Recommendation_Rule` VALUES ('Insufficient Weight','Guidance for healthy weight gain with a moderate calorie surplus and balanced nutrition.','Your result suggests you may be underweight. Focus on nourishing meals, adequate protein, and gradual healthy weight gain.',0.15,1.60,0.55,0.25),('Normal Weight','Guidance for weight maintenance with balanced calorie intake and healthy habits.','Your result suggests a healthy weight range. Maintain your current habits with balanced nutrition and regular activity.',0.00,1.20,0.50,0.30),('Overweight Level I','Guidance for gradual fat loss with a mild calorie deficit and increased physical activity.','Your result suggests mild overweight. A small calorie deficit and regular exercise can help improve your health.',-0.10,1.50,0.40,0.30),('Overweight Level II','Guidance for moderate fat loss with structured calorie control and higher protein intake.','Your result suggests moderate overweight. Focus on portion control, protein-rich meals, and consistent activity.',-0.15,1.60,0.35,0.30),('Obesity Type I','Guidance for sustained weight reduction with a stronger calorie deficit and lifestyle support.','Your result suggests obesity type I. A structured nutrition plan and regular lifestyle changes are recommended.',-0.20,1.80,0.30,0.30),('Obesity Type II','Guidance for significant weight reduction with careful calorie management and higher protein intake.','Your result suggests obesity type II. A more disciplined nutrition approach and professional support may be helpful.',-0.25,2.00,0.25,0.30),('Obesity Type III','Guidance for intensive weight management with close monitoring and strong nutritional support.','Your result suggests obesity type III. Please consider professional medical and nutritional guidance for safe progress.',-0.30,2.20,0.20,0.30);
+INSERT INTO `Recommendation_Rule` VALUES ('Insufficient Weight','Guidance for healthy weight gain with a moderate calorie surplus and balanced nutrition.','Your result suggests you may be underweight. Focus on nourishing meals, adequate protein, and gradual healthy weight gain.',0.15,1.60,0.55,0.25),('Normal Weight','Guidance for weight maintenance with balanced calorie intake and healthy habits.','Your result suggests a healthy weight range. Maintain your current habits with balanced nutrition and regular activity.',0.00,1.20,0.50,0.30),('Obesity Type I','Guidance for sustained weight reduction with a stronger calorie deficit and lifestyle support.','Your result suggests obesity type I. A structured nutrition plan and regular lifestyle changes are recommended.',-0.20,1.80,0.30,0.30),('Obesity Type II','Guidance for significant weight reduction with careful calorie management and higher protein intake.','Your result suggests obesity type II. A more disciplined nutrition approach and professional support may be helpful.',-0.25,2.00,0.25,0.30),('Obesity Type III','Guidance for intensive weight management with close monitoring and strong nutritional support.','Your result suggests obesity type III. Please consider professional medical and nutritional guidance for safe progress.',-0.30,2.20,0.20,0.30),('Overweight Level I','Guidance for gradual fat loss with a mild calorie deficit and increased physical activity.','Your result suggests mild overweight. A small calorie deficit and regular exercise can help improve your health.',-0.10,1.50,0.40,0.30),('Overweight Level II','Guidance for moderate fat loss with structured calorie control and higher protein intake.','Your result suggests moderate overweight. Focus on portion control, protein-rich meals, and consistent activity.',-0.15,1.60,0.35,0.30);
 /*!40000 ALTER TABLE `Recommendation_Rule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -249,9 +292,58 @@ CREATE TABLE `Selects` (
 
 LOCK TABLES `Selects` WRITE;
 /*!40000 ALTER TABLE `Selects` DISABLE KEYS */;
-INSERT INTO `Selects` VALUES (9,1,'No'),(12,1,'No'),(13,1,'No'),(10,1,'Yes'),(14,1,'Yes'),(15,1,'Yes'),(9,2,'No'),(10,2,'No'),(12,2,'No'),(13,2,'No'),(14,2,'No'),(15,2,'No'),(13,3,'1'),(9,3,'2'),(10,3,'2'),(12,3,'2'),(14,3,'2'),(15,3,'3'),(10,4,'1'),(12,4,'1'),(15,4,'1'),(13,4,'2'),(14,4,'2'),(9,4,'3'),(12,5,'Frequently'),(13,5,'Frequently'),(10,5,'Never'),(14,5,'Never'),(9,5,'Sometimes'),(15,5,'Sometimes'),(14,6,'1'),(15,6,'1'),(9,6,'2'),(12,6,'2'),(13,6,'2'),(10,6,'3'),(9,7,'No'),(10,7,'No'),(12,7,'No'),(13,7,'No'),(14,7,'No'),(15,7,'No'),(14,8,'0'),(10,8,'1'),(15,8,'1'),(9,8,'2'),(12,8,'2'),(13,8,'2'),(9,9,'0'),(14,9,'0'),(10,9,'1'),(12,9,'1'),(13,9,'1'),(15,9,'1'),(9,10,'Frequently'),(12,10,'Frequently'),(15,10,'Never'),(10,10,'Sometimes'),(13,10,'Sometimes'),(14,10,'Sometimes'),(9,11,'No'),(10,11,'No'),(12,11,'No'),(13,11,'No'),(14,11,'No'),(15,11,'No'),(13,12,'Automobile'),(10,12,'Bike'),(12,12,'Bike'),(14,12,'Bike'),(15,12,'Bike'),(9,12,'Public Transportation'),(9,13,'Low'),(14,13,'Low'),(15,13,'Low'),(10,13,'Moderate'),(12,13,'Moderate'),(13,13,'Moderate');
+INSERT INTO `Selects` VALUES (11,1,'No'),(11,2,'No'),(11,3,'1'),(11,4,'3'),(11,5,'Sometimes'),(11,6,'2'),(11,7,'No'),(11,8,'2'),(11,9,'2'),(11,10,'Frequently'),(11,11,'No'),(11,12,'Motorbike'),(11,13,'Low');
 /*!40000 ALTER TABLE `Selects` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `t_before_insert_selects` BEFORE INSERT ON `selects` FOR EACH ROW BEGIN
+    DECLARE v_question_type ENUM('boolean', 'single_choice', 'multiple_choice');
+    DECLARE v_question_active BOOLEAN;
+    DECLARE v_option_active BOOLEAN;
+    DECLARE v_existing_count INT DEFAULT 0;
+    SELECT q.question_type, q.is_active, qo.is_active
+    INTO v_question_type, v_question_active, v_option_active
+    FROM Question_Option qo
+    JOIN Question q ON q.question_id = qo.question_id
+    WHERE qo.question_id = NEW.question_id
+      AND qo.option_text = NEW.option_text;
+    IF v_question_active IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Option not found for this question';
+    END IF;
+    IF v_question_active = FALSE THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Question is inactive';
+    END IF;
+    IF v_option_active = FALSE THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Selected option is inactive';
+    END IF;
+    IF v_question_type IN ('boolean', 'single_choice') THEN
+        SELECT COUNT(*)
+        INTO v_existing_count
+        FROM Selects
+        WHERE session_id = NEW.session_id
+          AND question_id = NEW.question_id;
+        IF v_existing_count > 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Only one option allowed for this question type';
+        END IF;
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `Specialization`
@@ -306,9 +398,29 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES ('alex1@gmail.com','1234567893','Alex','Thomas','Other','2000-02-15',170.80,68.90),('anhtuyet1712@gmail.com','0909697392','THI ANH TUYET','TU','Female','2026-04-05',150.00,50.00),('hongnhung119992@gmail.com','2154509313000','THI HONG NHUNG','TU','Male','2016-04-11',155.00,50.00),('khanggiayang@gmail.com','09096973955','KHANG','NGUYEN','Male','2026-04-08',166.00,1.00),('le.thanh.hang@versuni.com','0912187082','THANH HANG','LE','Female','2026-04-05',167.00,44.00),('max1@gmail.com','1234567892','Max','Allen','Male','2001-11-03',165.00,58.40),('neha1@gmail.com','1234567890','Neha','BK','Female','2003-05-12',160.50,55.00),('newlightvn2@gmail.com','0909785558','THU','NGUYEN','Male','2026-04-06',11.00,55.00),('tu.tu@northeastern.edu','09096973966','THI ANH TUYET','TU','Male','2026-04-07',155.00,55.00),('tuyet1@gmail.com','1234567891','Tuyet','Tu','Female','2002-08-20',175.20,72.50);
+INSERT INTO `User` VALUES ('alex1@gmail.com','1234567893','Alex','Thomas','Other','2000-02-15',170.80,68.90),('max1@gmail.com','1234567892','Max','Allen','Male','2001-11-03',165.00,58.40),('neha1@gmail.com','1234567890','Neha','BK','Female','2003-05-12',160.50,55.00),('tuyet1@gmail.com','1234567891','Tuyet','Tu','Female','2002-08-20',175.20,72.50),('tuyet1712@gmail.com','6176666666','TUYET','TU','Female','1950-04-18',189.00,67.00);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `t_before_insert_user` BEFORE INSERT ON `user` FOR EACH ROW BEGIN
+    IF NEW.dob >= CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Date of birth must be before today';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Dumping events for database 'livewell'
@@ -327,9 +439,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `calculate_age`(
-    p_dob DATE
-) RETURNS int
+CREATE DEFINER=`root`@`localhost` FUNCTION `calculate_age`(p_dob DATE) RETURNS int
     READS SQL DATA
 BEGIN
     IF p_dob >= CURDATE() THEN
@@ -354,8 +464,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `calculate_bmi`(
     p_height_cm DECIMAL(5,2),
-    p_weight_kg DECIMAL(5,2)
-) RETURNS decimal(6,2)
+    p_weight_kg DECIMAL(5,2)) RETURNS decimal(6,2)
     DETERMINISTIC
 BEGIN
     IF p_height_cm <= 0 OR p_weight_kg <= 0 THEN
@@ -383,8 +492,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `calculate_calories`(
     p_height_cm DECIMAL(5,2),
     p_dob DATE,
     p_gender VARCHAR(20),
-    p_calorie_adjustment_factor DECIMAL(5,2)
-) RETURNS decimal(8,2)
+    p_calorie_adjustment_factor DECIMAL(5,2)) RETURNS decimal(8,2)
     READS SQL DATA
 BEGIN
     DECLARE v_age INT;
@@ -392,7 +500,7 @@ BEGIN
     IF p_weight_kg <= 0 OR p_height_cm <= 0 OR p_dob >= CURDATE() THEN
         RETURN NULL;
     END IF;
-    SET v_age = TIMESTAMPDIFF(YEAR, p_dob, CURDATE());
+    SET v_age = calculate_age(p_dob); -- using function here
     IF p_gender = 'Male' THEN
         SET v_tdee = 10 * p_weight_kg + 6.25 * p_height_cm - 5 * v_age + 5;
     ELSEIF p_gender = 'Female' THEN
@@ -421,8 +529,7 @@ CREATE DEFINER=`root`@`localhost` FUNCTION `calculate_carbs`(
     p_calories DECIMAL(8,2),
     p_protein_g DECIMAL(8,2),
     p_fat_g DECIMAL(8,2),
-    p_carbs_ratio DECIMAL(5,2)
-) RETURNS decimal(8,2)
+    p_carbs_ratio DECIMAL(5,2)) RETURNS decimal(8,2)
     DETERMINISTIC
 BEGIN
     DECLARE v_remaining DECIMAL(8,2);
@@ -453,8 +560,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `calculate_fat`(
     p_calories DECIMAL(8,2),
     p_protein_g DECIMAL(8,2),
-    p_fat_ratio DECIMAL(5,2)
-) RETURNS decimal(8,2)
+    p_fat_ratio DECIMAL(5,2)) RETURNS decimal(8,2)
     DETERMINISTIC
 BEGIN
     DECLARE v_remaining DECIMAL(8,2);
@@ -484,8 +590,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `calculate_protein`(
     p_weight_kg DECIMAL(5,2),
-    p_protein_per_kg DECIMAL(5,2)
-) RETURNS decimal(8,2)
+    p_protein_per_kg DECIMAL(5,2)) RETURNS decimal(8,2)
     DETERMINISTIC
 BEGIN
     IF p_weight_kg <= 0 OR p_protein_per_kg < 0 THEN
@@ -512,20 +617,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `book_slot`(
     IN p_user_email VARCHAR(255),
     IN p_consultant_email VARCHAR(255),
     IN p_slot_date DATE,
-    IN p_slot_time VARCHAR(10)
-)
+    IN p_slot_time VARCHAR(10))
 BEGIN
     DECLARE v_status ENUM('open', 'booked');
-
     IF NOT EXISTS (SELECT 1 FROM User WHERE user_email = p_user_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
     END IF;
     IF NOT EXISTS (SELECT 1 FROM Consultant WHERE consultant_email = p_consultant_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Consultant not found';
     END IF;
-
     START TRANSACTION;
-
     -- Lock row to prevent race condition
     SELECT booking_status INTO v_status
     FROM Consultant_Availability
@@ -533,17 +634,14 @@ BEGIN
       AND slot_date = p_slot_date
       AND slot_time = p_slot_time
     FOR UPDATE;
-
     IF v_status IS NULL THEN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Slot not found';
     END IF;
-
     IF v_status = 'booked' THEN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Slot is no longer available';
     END IF;
-
     -- Check user not already booked at same date and time with any consultant
     IF EXISTS (
         SELECT 1 FROM Consultant_Availability
@@ -554,7 +652,6 @@ BEGIN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You already have a booking at this date and time';
     END IF;
-
     -- Check user not already booked with same consultant on same date
     IF EXISTS (
         SELECT 1 FROM Consultant_Availability
@@ -565,13 +662,11 @@ BEGIN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You already have a booking with this consultant on this date';
     END IF;
-
     UPDATE Consultant_Availability
     SET user_email = p_user_email
     WHERE consultant_email = p_consultant_email
       AND slot_date = p_slot_date
       AND slot_time = p_slot_time;
-
     COMMIT;
 END ;;
 DELIMITER ;
@@ -593,16 +688,14 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `cancel_booking`(
     IN p_user_email VARCHAR(255),
     IN p_consultant_email VARCHAR(255),
     IN p_slot_date DATE,
-    IN p_slot_time VARCHAR(10)
-)
+    IN p_slot_time VARCHAR(10))
 BEGIN
     IF NOT EXISTS (
         SELECT 1 FROM Consultant_Availability
         WHERE consultant_email = p_consultant_email
           AND slot_date = p_slot_date
           AND slot_time = p_slot_time
-          AND user_email = p_user_email
-    ) THEN
+          AND user_email = p_user_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Booking not found or does not belong to this user';
     END IF;
     UPDATE Consultant_Availability
@@ -610,7 +703,7 @@ BEGIN
     WHERE consultant_email = p_consultant_email
       AND slot_date = p_slot_date
       AND slot_time = p_slot_time;
-    -- trigger t_before_update_consultant_availability auto-sets booking_status = 'open'
+    -- t_sync_booking_status_on_update
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -627,9 +720,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_available_slots`(
-    IN p_consultant_email VARCHAR(255)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_available_slots`(IN p_consultant_email VARCHAR(255))
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Consultant WHERE consultant_email = p_consultant_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Consultant not found';
@@ -656,22 +747,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_by_email`(
-    IN p_email VARCHAR(255)
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_user_by_email`(IN p_email VARCHAR(255))
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM User WHERE user_email = p_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
     END IF;
     SELECT
-        user_email,
-        phone,
-        first_name,
-        last_name,
-        gender,
-        dob,
-        height,
-        weight,
+        user_email, phone, first_name, last_name, gender, dob, height, weight,
         calculate_age(dob) AS age,
         calculate_bmi(height, weight) AS bmi
     FROM User
@@ -700,8 +782,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `register_user`(
     IN p_gender ENUM('Male', 'Female', 'Other'),
     IN p_dob DATE,
     IN p_height DECIMAL(5,2),
-    IN p_weight DECIMAL(5,2)
-)
+    IN p_weight DECIMAL(5,2))
 BEGIN
     IF EXISTS (SELECT 1 FROM User WHERE user_email = p_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email already exists';
@@ -728,8 +809,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `search_consultants_by_specialization`(
-    IN p_specialization_name VARCHAR(100)
-)
+    IN p_specialization_name VARCHAR(100))
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Specialization WHERE specialization_name = p_specialization_name) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Specialization not found';
@@ -744,40 +824,8 @@ BEGIN
     JOIN Obtains o ON c.consultant_email = o.consultant_email
     WHERE c.consultant_email IN (
         SELECT consultant_email FROM Obtains
-        WHERE specialization_name = p_specialization_name
-    )
+        WHERE specialization_name = p_specialization_name)
     GROUP BY c.consultant_email, c.first_name, c.last_name, c.description;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_delete_assessment_session` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_assessment_session`(
-    IN p_session_id INT,
-    IN p_email VARCHAR(255)
-)
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Assessment_Session WHERE session_id = p_session_id) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Session not found';
-    END IF;
-    IF NOT EXISTS (
-        SELECT 1 FROM Assessment_Session
-        WHERE session_id = p_session_id AND user_email = p_email
-    ) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Session does not belong to this user';
-    END IF;
-    DELETE FROM Assessment_Session WHERE session_id = p_session_id;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -795,8 +843,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_get_booking_history`(
-    IN p_user_email VARCHAR(255)
-)
+    IN p_user_email VARCHAR(255))
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM User WHERE user_email = p_user_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
@@ -835,22 +882,18 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `start_assessment_session`(
     IN p_email VARCHAR(255),
-    OUT p_session_id INT
-)
+    OUT p_session_id INT)
 BEGIN
     DECLARE v_existing_session INT;
-
     IF NOT EXISTS (SELECT 1 FROM User WHERE user_email = p_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
     END IF;
-
     -- Check if there is an existing in-progress session
     SELECT session_id INTO v_existing_session
     FROM Assessment_Session
     WHERE user_email = p_email AND status = 'In-progress'
     ORDER BY started_at DESC
     LIMIT 1;
-
     IF v_existing_session IS NOT NULL THEN
         -- Resume existing session
         SET p_session_id = v_existing_session;
@@ -878,8 +921,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `submit_assessment`(
     IN p_session_id INT,
-    IN p_predicted_obesity_level VARCHAR(50)
-)
+    IN p_predicted_obesity_level VARCHAR(50))
 BEGIN
     DECLARE v_user_email VARCHAR(255);
     DECLARE v_dob DATE;
@@ -896,12 +938,10 @@ BEGIN
     DECLARE v_carbs DECIMAL(8,2);
     DECLARE v_required_count INT;
     DECLARE v_answered_count INT;
-
     -- check session exists
     IF NOT EXISTS (SELECT 1 FROM Assessment_Session WHERE session_id = p_session_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Session not found';
     END IF;
-
     -- check not already submitted
     IF EXISTS (
         SELECT 1 FROM Assessment_Session
@@ -910,7 +950,6 @@ BEGIN
     ) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Assessment result already exists for this session';
     END IF;
-
     -- check obesity level valid
     IF NOT EXISTS (
         SELECT 1 FROM Recommendation_Rule
@@ -918,46 +957,38 @@ BEGIN
     ) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Unknown obesity level';
     END IF;
-
     -- check all required questions answered
     SELECT COUNT(*) INTO v_required_count
     FROM Question
     WHERE is_required = TRUE AND is_active = TRUE;
-
     SELECT COUNT(DISTINCT s.question_id) INTO v_answered_count
     FROM Selects s
     JOIN Question q ON q.question_id = s.question_id
     WHERE s.session_id = p_session_id
       AND q.is_required = TRUE
       AND q.is_active = TRUE;
-
     IF v_answered_count < v_required_count THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Not all required questions have been answered';
     END IF;
-
     -- get user biometrics
     SELECT u.user_email, u.dob, u.gender, u.height, u.weight
     INTO v_user_email, v_dob, v_gender, v_height, v_weight
     FROM Assessment_Session a
     JOIN User u ON u.user_email = a.user_email
     WHERE a.session_id = p_session_id;
-
     -- get recommendation rule factors
     SELECT calorie_adjustment_factor, protein_per_kg, carbs_ratio, fat_ratio
     INTO v_calorie_adj, v_protein_per_kg, v_carbs_ratio, v_fat_ratio
     FROM Recommendation_Rule
     WHERE obesity_level = p_predicted_obesity_level;
-
     -- compute nutrition plan using UDFs
     SET v_calories = calculate_calories(v_weight, v_height, v_dob, v_gender, v_calorie_adj);
     SET v_protein  = calculate_protein(v_weight, v_protein_per_kg);
     SET v_fat      = calculate_fat(v_calories, v_protein, v_fat_ratio);
     SET v_carbs    = calculate_carbs(v_calories, v_protein, v_fat, v_carbs_ratio);
-
     -- update session with result
     UPDATE Assessment_Session
     SET predicted_obesity_level = p_predicted_obesity_level,
-        assessed_at = NOW(),
         status = 'completed',
         calories = v_calories,
         protein_g = v_protein,
@@ -983,8 +1014,7 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `submit_response`(
     IN p_session_id INT,
     IN p_question_id INT,
-    IN p_option_text VARCHAR(255)
-)
+    IN p_option_text VARCHAR(255))
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Assessment_Session WHERE session_id = p_session_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Session not found';
@@ -995,8 +1025,7 @@ BEGIN
         WHERE qo.question_id = p_question_id
           AND qo.option_text = p_option_text
           AND q.is_active = TRUE
-          AND qo.is_active = TRUE
-    ) THEN
+          AND qo.is_active = TRUE) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Option not found or belongs to inactive question';
     END IF;
     -- trigger t_before_insert_selects handles duplicate + single_choice enforcement
@@ -1025,24 +1054,19 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `update_booking`(
     IN p_old_slot_time VARCHAR(10),
     IN p_new_consultant_email VARCHAR(255),
     IN p_new_slot_date DATE,
-    IN p_new_slot_time VARCHAR(10)
-)
+    IN p_new_slot_time VARCHAR(10))
 BEGIN
     DECLARE v_new_status ENUM('open', 'booked');
-
     -- check old booking exists and belongs to user
     IF NOT EXISTS (
         SELECT 1 FROM Consultant_Availability
         WHERE consultant_email = p_old_consultant_email
           AND slot_date = p_old_slot_date
           AND slot_time = p_old_slot_time
-          AND user_email = p_user_email
-    ) THEN
+          AND user_email = p_user_email) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Original booking not found or does not belong to this user';
     END IF;
-
     START TRANSACTION;
-
     -- lock new slot
     SELECT booking_status INTO v_new_status
     FROM Consultant_Availability
@@ -1050,17 +1074,14 @@ BEGIN
       AND slot_date = p_new_slot_date
       AND slot_time = p_new_slot_time
     FOR UPDATE;
-
     IF v_new_status IS NULL THEN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'New slot not found';
     END IF;
-
     IF v_new_status = 'booked' THEN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'New slot is not available';
     END IF;
-
     IF EXISTS (
         SELECT 1 FROM Consultant_Availability
         WHERE user_email = p_user_email
@@ -1068,69 +1089,23 @@ BEGIN
           AND slot_time = p_new_slot_time
           AND NOT (consultant_email = p_old_consultant_email
               AND slot_date = p_old_slot_date
-              AND slot_time = p_old_slot_time)
-    ) THEN
+              AND slot_time = p_old_slot_time)) THEN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User already has a booking at the new date and time';
     END IF;
-
     -- release old slot
     UPDATE Consultant_Availability
     SET user_email = NULL
     WHERE consultant_email = p_old_consultant_email
       AND slot_date = p_old_slot_date
       AND slot_time = p_old_slot_time;
-
     -- book new slot
     UPDATE Consultant_Availability
     SET user_email = p_user_email
     WHERE consultant_email = p_new_consultant_email
       AND slot_date = p_new_slot_date
       AND slot_time = p_new_slot_time;
-
     COMMIT;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `update_user` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_user`(
-    IN p_email VARCHAR(255),
-    IN p_phone VARCHAR(20),
-    IN p_first_name VARCHAR(100),
-    IN p_last_name VARCHAR(100),
-    IN p_gender ENUM('Male', 'Female', 'Other'),
-    IN p_dob DATE,
-    IN p_height DECIMAL(5,2),
-    IN p_weight DECIMAL(5,2)
-)
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM User WHERE user_email = p_email) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';
-    END IF;
-    IF EXISTS (SELECT 1 FROM User WHERE phone = p_phone AND user_email != p_email) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Phone already in use by another account';
-    END IF;
-    UPDATE User
-    SET phone = p_phone,
-        first_name = p_first_name,
-        last_name = p_last_name,
-        gender = p_gender,
-        dob = p_dob,
-        height = p_height,
-        weight = p_weight
-    WHERE user_email = p_email;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1147,4 +1122,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-09 19:56:27
+-- Dump completed on 2026-04-10 21:13:41
