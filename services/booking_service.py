@@ -8,8 +8,7 @@ def get_all_specializations():
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
         cursor.execute(
-            "SELECT specialization_name FROM Specialization ORDER BY specialization_name"
-        )
+            "SELECT specialization_name FROM Specialization ORDER BY specialization_name")
         return True, cursor.fetchall()
     except mysql.connector.Error as e:
         return False, e.msg
@@ -26,7 +25,6 @@ def get_consultants_filtered(specialization=None, filter_date=None, name=None):
     try:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
-
         # Build dynamic query
         date_join = "AND ca.slot_date = %s" if filter_date else ""
         spec_filter = "AND o.specialization_name = %s" if specialization else ""
@@ -130,7 +128,7 @@ def get_booking_history(user_email):
     try:
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.callproc("sp_get_booking_history", [user_email])
+        cursor.callproc("get_booking_history", [user_email])
         results = []
         for result in cursor.stored_results():
             results = result.fetchall()

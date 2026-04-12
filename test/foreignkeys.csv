@@ -1,0 +1,10 @@
+TABLE_NAME,CONSTRAINT_NAME,UPDATE_RULE,DELETE_RULE
+Assessment_Session,assessment_session_ibfk_1,CASCADE,CASCADE
+Assessment_Session,assessment_session_ibfk_2,CASCADE,CASCADE
+Consultant_Availability,consultant_availability_ibfk_1,CASCADE,RESTRICT
+Consultant_Availability,consultant_availability_ibfk_2,CASCADE,RESTRICT
+Obtains,obtains_ibfk_1,CASCADE,CASCADE
+Obtains,obtains_ibfk_2,CASCADE,CASCADE
+Question_Option,question_option_ibfk_1,CASCADE,RESTRICT
+Selects,selects_ibfk_1,CASCADE,CASCADE
+Selects,selects_ibfk_2,CASCADE,CASCADE

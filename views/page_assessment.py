@@ -7,7 +7,9 @@ from services.assessment_service import (
     submit_assessment,
     get_assessment_result,
     is_existing_session,
-    clear_session_responses)
+    clear_session_responses,
+    get_session_responses
+    )
 from ml.predictor import predict_obesity_level
 
 def show():
@@ -74,14 +76,12 @@ def show():
                         options=options,
                         index=None,
                         horizontal=True,
-                        key=f"q_{q['question_id']}"
-                    )
+                        key=f"q_{q['question_id']}")
                 else:  # single_choice
                     selected = st.selectbox(
                         label,
                         options=["-- Select --"] + options,
-                        key=f"q_{q['question_id']}"
-                    )
+                        key=f"q_{q['question_id']}")
                 responses[q["question_text"]] = selected
 
             submitted = st.form_submit_button("Submit Assessment")
@@ -106,14 +106,12 @@ def show():
                     # Skip optional questions that were not answered
                     if not q["is_required"] and (
                         not responses.get(q["question_text"])
-                        or responses[q["question_text"]] == "-- Select --"
-                    ):
+                        or responses[q["question_text"]] == "-- Select --"):
                         continue
                     success, msg = submit_response(
                         st.session_state["session_id"],
                         q["question_id"],
-                        responses[q["question_text"]]
-                    )
+                        responses[q["question_text"]])
                     if not success:
                         st.error(f"Error on '{q['question_text']}': {msg}")
                         return
@@ -126,15 +124,23 @@ def show():
     # 3: Completed screen 
     if st.session_state.get("assessment_step") == "completed":
         st.success("Assessment completed!")
-        st.write("Your responses have been recorded.")
+        st.markdown("Your responses have been recorded.")
+        st.divider()
+        st.markdown("**Ready to see your obesity level prediction and personalized nutrition plan?**")
+        st.caption("Your responses have been saved. Click below to run the health analysis and receive your recommendation.")
 
-        if st.button("See My Results", use_container_width=True):
+        if st.button("Get My Results", use_container_width=True):
             st.session_state["assessment_step"] = "result"
+            st.rerun()
+
+        if st.button("Save and Exit", use_container_width=True):
+            st.info("Your responses have been saved. You can return to Assessment History to view results later.")
+            for key in ["session_id", "assessment_step", "responses"]:
+                st.session_state.pop(key, None)
             st.rerun()
 
     # 4: Run ML + show result 
     if st.session_state.get("assessment_step") == "result":
-        
         # Only run ML + submit if not already done
         if "assessment_result" not in st.session_state:
             with st.spinner("Analyzing your results..."):
@@ -149,13 +155,17 @@ def show():
                     for opt in q["options"]:
                         option_value_map[(q["question_text"], opt["option_text"])] = opt["option_value"]
 
+                # fetch responses from DB if not in session_state - handling when moving from Assessment History
+                if "responses" not in st.session_state:
+                    _, db_responses = get_session_responses(st.session_state["session_id"])
+                    st.session_state["responses"] = db_responses
+
                 responses_for_model = {}
                 for q in questions:
                     selected_text = st.session_state["responses"].get(q["question_text"])
                     if selected_text and selected_text != "-- Select --":
                         responses_for_model[q["question_text"]] = option_value_map.get(
-                            (q["question_text"], selected_text), selected_text
-                        )
+                            (q["question_text"], selected_text), selected_text)
 
                 predicted_level = predict_obesity_level(
                     responses=responses_for_model,

@@ -29,23 +29,15 @@ def check_and_start_session(email):
     try:
         conn = get_connection()
         cursor = conn.cursor()
-
         result = cursor.callproc("start_assessment_session", [email, 0])
-        print(f"DEBUG callproc result: {result}")  # ← result là tuple chứa args sau khi procedure chạy
-
         # OUT parameter nằm ở index 1 trong result tuple
         session_id = result[1]
-        print(f"DEBUG session_id from result: {session_id}")
-
         conn.commit()
-
         if session_id is None:
             return False, "Could not create session"
-
         return True, int(session_id)
 
     except mysql.connector.Error as e:
-        print(f"DEBUG mysql error: {e.msg}")
         return False, e.msg
     finally:
         try:
@@ -69,7 +61,6 @@ def get_questions():
             ORDER BY q.question_id, o.display_order
         """)
         rows = cursor.fetchall()
-
         questions = {}
         for row in rows:
             qid = row["question_id"]
@@ -79,17 +70,13 @@ def get_questions():
                     "question_text": row["question_text"],
                     "question_type": row["question_type"],
                     "is_required": bool(row["is_required"]),
-                    "options": []
-                }
+                    "options": []}
             questions[qid]["options"].append({
                 "option_text": row["option_text"],
                 "option_value": row["option_value"]
             })
-
         return list(questions.values())
-
     except Exception as e:
-        print(f"DEBUG get_questions error: {type(e)} — {e}")
         return []
     finally:
         try:
@@ -197,6 +184,68 @@ def clear_session_responses(session_id):
         return True
     except:
         return False
+    finally:
+        try:
+            if cursor is not None: cursor.close()
+            if conn is not None: conn.close()
+        except: pass
+
+def get_assessment_history(user_email):
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT session_id, started_at, status,
+                   predicted_obesity_level, calories, protein_g, carbs_g, fat_g
+            FROM Assessment_Session
+            WHERE user_email = %s
+            ORDER BY started_at DESC
+        """, (user_email,))
+        return True, cursor.fetchall()
+    except mysql.connector.Error as e:
+        return False, e.msg
+    finally:
+        try:
+            if cursor is not None: cursor.close()
+            if conn is not None: conn.close()
+        except: pass
+
+def delete_assessment_session(session_id, user_email):
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.callproc("delete_assessment_session", [session_id, user_email])
+        conn.commit()
+        return True, "Assessment deleted successfully."
+    except mysql.connector.Error as e:
+        return False, e.msg
+    finally:
+        try:
+            if cursor is not None: cursor.close()
+            if conn is not None: conn.close()
+        except: pass
+
+def get_session_responses(session_id):
+    conn = None
+    cursor = None
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT q.question_text, sl.option_text
+            FROM Selects sl
+            JOIN Question q ON q.question_id = sl.question_id
+            WHERE sl.session_id = %s
+        """, (session_id,))
+        rows = cursor.fetchall()
+        responses = {row["question_text"]: row["option_text"] for row in rows}
+        return True, responses
+    except mysql.connector.Error as e:
+        return False, e.msg
     finally:
         try:
             if cursor is not None: cursor.close()

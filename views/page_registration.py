@@ -21,10 +21,10 @@ def show():
                 st.session_state["page"] = "assessment"
                 st.rerun()
         with col2:
-            if st.button("Register New Account", use_container_width=True):
+            if st.button("Make a Booking", use_container_width=True): 
                 st.session_state["show_success_popup"] = False
-                st.session_state.pop("registered_email", None)
-                st.session_state.pop("user_email", None)
+                st.session_state["user_email"] = st.session_state["registered_email"]
+                st.session_state["page"] = "booking"  
                 st.rerun()
         return
 

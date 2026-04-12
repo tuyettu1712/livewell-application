@@ -2,6 +2,8 @@ import mysql.connector
 from db.connection import get_connection
 
 def register_user(email, phone, first_name, last_name, gender, dob, height, weight):
+    conn = None
+    cursor = None
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -15,5 +17,3 @@ def register_user(email, phone, first_name, last_name, gender, dob, height, weig
     finally:
         cursor.close()
         conn.close()
-
-
