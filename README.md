@@ -18,18 +18,10 @@ LiveWell is an online health consultancy platform that provides users with an in
 | Layer | Technology |
 |---|---|
 | Frontend | Streamlit 1.56.0 |
-| Backend | Python 3.10+ |
-| Database | MySQL 8.0+ |
+| Backend | Python 3.12.7 |
+| Database | MySQL 8.4.0 |
 | ML Model | LightGBM 4.6.0 |
 | DB Connector | mysql-connector-python 9.6.0 |
-
----
-
-## Prerequisites
-
-- Python 3.10+
-- MySQL 8.0+
-- Anaconda (recommended)
 
 ---
 
@@ -37,16 +29,26 @@ LiveWell is an online health consultancy platform that provides users with an in
 
 ### 1. Clone the project
 
+> **Requirements:** Python 3.12.7 and MySQL 8.4.0 must be installed before proceeding.
+
 ```bash
 git clone https://github.com/tuyettu1712/livewell-application
-cd livewell
+cd livewell-application
 ```
 
 ### 2. Create and activate environment
 
+**Option A — Using Anaconda:**
 ```bash
-conda create -n livewell_env python=3.10 pip
+conda create -n livewell_env python=3.12 pip
 conda activate livewell_env
+```
+
+**Option B — Using Python venv:**
+```bash
+python -m venv livewell_env
+source livewell_env/bin/activate        # macOS/Linux
+livewell_env\Scripts\activate           # Windows
 ```
 
 ### 3. Install dependencies
@@ -58,11 +60,20 @@ pip install -r requirements.txt
 ### 4. Setup MySQL database
 
 Make sure MySQL is running, then import the dump file:
+
+**Option A — Terminal:**
 ```bash
 mysql -u root -p < sql/livewell_dump.sql
 ```
 
-The dump file includes all DDL, stored procedures, functions, triggers, and dummy data.
+**Option B — MySQL Workbench:**
+1. Open MySQL Workbench
+2. Go to Server → Data Import
+3. Select "Import from Self-Contained File"
+4. Choose `sql/livewell_dump.sql`
+5. Click "Start Import"
+
+The dump file includes all DDL, stored procedures, functions, triggers, and seed data.
 
 > **Note:** If you encounter Error 1418 when importing functions, run the following in MySQL Workbench first:
 > ```sql
@@ -97,26 +108,27 @@ App will open at `http://localhost:8501`
 
 ```
 livewell/
-├── app.py                          # Streamlit entry point
+├── app.py                              # Streamlit entry point
 ├── requirements.txt
 ├── images/
 │   └── logo.png
 ├── ml/
-│   ├── model.pkl                   # Pre-trained LightGBM model
-│   └── predictor.py                # ML prediction module
+│   ├── model.pkl                       # Pre-trained LightGBM model
+│   └── predictor.py                    # ML prediction module
 ├── db/
-│   └── connection.py               # MySQL connection
+│   └── connection.py                   # MySQL connection
 ├── services/
-│   ├── user_registration.py        # User CRUD
-│   ├── assessment_service.py       # Assessment + ML pipeline
-│   └── booking_service.py          # Booking CRUD
+│   ├── user_registration.py            # User CRUD
+│   ├── assessment_service.py           # Assessment + ML pipeline
+│   └── booking_service.py              # Booking CRUD
 ├── views/
-│   ├── page_registration.py        # Registration page
-│   ├── page_assessment.py          # Assessment page
-│   ├── page_booking.py             # Booking page
-│   └── page_my_booking.py          # Booking history page
+│   ├── page_registration.py            # Registration page
+│   ├── page_assessment.py              # Assessment page
+│   ├── page_assessment_history.py      # Assessment history page
+│   ├── page_booking.py                 # Booking page
+│   └── page_my_booking.py              # My Bookings page
 └── sql/
-    └── livewell_dump.sql            # Full database dump
+    └── livewell_dump.sql                # Full database dump
 ```
 
 ---
@@ -126,7 +138,8 @@ livewell/
 | Page | Description |
 |---|---|
 | Register | Create a new user profile with personal and biometric data |
-| Assessment | Complete a 12-question lifestyle questionnaire and receive obesity classification and personalized nutrition plan |
+| Assessment | Complete a 13-question lifestyle questionnaire and receive obesity classification and personalized nutrition plan |
+| Assessment History | View, continue incomplete, or delete past assessment sessions |
 | Booking | Browse and book a consultation slot with available health consultants |
 | My Bookings | View, update, or cancel existing bookings |
 
@@ -139,7 +152,7 @@ livewell/
 | Tables | 10 | Normalized to 3NF |
 | Stored Procedures | 12 | Handle all CRUD and transactional operations |
 | User-Defined Functions | 6 | BMI, age, calorie, protein, fat, carbs calculations |
-| Triggers | 5 | Data validation and booking status automation |
+| Triggers | 4 | Data validation and booking status automation |
 
 ---
 
@@ -160,4 +173,4 @@ livewell/
 | `pip` not found in conda env | Run `conda install pip` first |
 | App not loading | Make sure MySQL is running before starting Streamlit |
 | `model.pkl` not found | Ensure the file is placed in the `ml/` folder |
-| Connection refused | Check MySQL credentials in `db/connection.py` |# livewell-application
+| Connection refused | Check MySQL credentials in `db/connection.py` |
